@@ -17,12 +17,49 @@ public class ValidPalindrome {
      * @return
      */
     public boolean isPalindrome(String s) {
-        //TODO 代做
+        return checkPalindromic(s.toCharArray());
+    }
+
+    private static boolean checkPalindromic(char[] chars) {
+        int start = 0;
+        int end = chars.length - 1;
+        while (start < end) {
+            if (!Character.isLetterOrDigit(chars[start])) {
+                start++;
+                continue;
+            }
+            if (!Character.isLetterOrDigit(chars[end])) {
+                end--;
+                continue;
+            }
+
+            if (!isEqual(chars[start], chars[end])) {
+                return false;
+            }
+            start++;
+            end--;
+        }
         return true;
+    }
+
+
+    private static boolean isEqual(char c1, char c2) {
+        if (c1 == c2) {
+            return true;
+        } else if (Character.isLetter(c1) && Character.isLetter(c2)) {
+            if (c1 == c2 - 32 || c1 == c2 + 32) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * https://leetcode-cn.com/problems/valid-palindrome-ii/
+     *
+     * 这个是自己做的暴力法求解 过了
+     * {@link LongestPalindromicSubstring#longestPalindrome(String)}
+     *
      *
      * @param s
      * @return
@@ -63,7 +100,7 @@ public class ValidPalindrome {
                         isDelete = true;
                     }
                 } else if (isDeleteStart && isDeleteEnd) {
-                    if(isDelete){
+                    if (isDelete) {
                         return false;
                     }
                     boolean flag1 = true;
