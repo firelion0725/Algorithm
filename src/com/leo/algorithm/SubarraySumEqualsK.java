@@ -59,20 +59,40 @@ public class SubarraySumEqualsK {
         return count;
     }
 
+    public int subarraySum3(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        int result = 0;
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        sum = 0;
+        for (int num : nums) {
+            sum += num;
+            if (map.containsKey(sum - k)) {
+                result += map.get(sum - k);
+            }
+        }
+
+        return result;
+    }
+
+
     //======================官方标答==============================
     public int subarraySumOffice(int[] nums, int k) {
         int count = 0, pre = 0;
         HashMap<Integer, Integer> mp = new HashMap<>();
         mp.put(0, 1);
-        for (int i = 0; i < nums.length; i++) {
-            pre += nums[i];
+        for (int num : nums) {
+            pre += num;
             if (mp.containsKey(pre - k)) {
                 count += mp.get(pre - k);
             }
             mp.put(pre, mp.getOrDefault(pre, 0) + 1);
         }
         return count;
-
     }
 
 

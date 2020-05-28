@@ -28,6 +28,12 @@ public class Utils {
         }
     }
 
+    public static <T> void showResult(List<T> nums) {
+        for (int i = 0; i < nums.size(); i++) {
+            System.out.println(nums.get(i));
+        }
+    }
+
     public static void showResult(String s) {
         System.out.println(s);
     }
