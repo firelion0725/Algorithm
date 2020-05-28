@@ -10,7 +10,7 @@ public class ValidAnagram {
         isAnagram(s, t);
     }
 
-    //暴力法 对比
+    //排序对比
     public static boolean isAnagram(String s, String t) {
         if (s.length() != t.length()) {
             return false;
@@ -26,7 +26,6 @@ public class ValidAnagram {
         Arrays.sort(c2);
 
         return Arrays.equals(c1, c2);
-
     }
 
     public boolean isAnagram2(String s, String t) {
