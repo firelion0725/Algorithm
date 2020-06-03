@@ -36,4 +36,18 @@ public class Utils {
         return list.get(0);
     }
 
+
+    public static ListNode intToListNode(Integer[] nums) {
+        List<ListNode> list = new ArrayList<>();
+        for (Integer num : nums) {
+            ListNode node = new ListNode(num);
+            list.add(node);
+        }
+        for (int i = 0; i < list.size() - 1; i++) {
+            ListNode listNode = list.get(i);
+            listNode.next = list.get(i + 1);
+        }
+        return list.get(0);
+    }
+
 }
