@@ -2,6 +2,7 @@ package com.leo.algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,9 +11,19 @@ import java.util.List;
 public class Permutations {
 
     public static void main(String[] args) {
+        test2();
+    }
+
+    private void test() {
         int[] nums = {1, 2, 3};
         Permutations permutations = new Permutations();
         permutations.permute(nums);
+    }
+
+    private static void test2() {
+        int[] nums = {1, 2, 3};
+        Permutations permutations = new Permutations();
+        permutations.permuteOffice(nums);
     }
 
     public List<List<Integer>> permute(int[] nums) {
@@ -55,19 +66,44 @@ public class Permutations {
 
     }
 
-    //不成功。。。。
-    public void backtrackOffice(int n, ArrayList<Integer> output, List<List<Integer>> res, int first) {
-        // 所有数都填完了
-        if (first == n)
-            res.add(new ArrayList<Integer>(output));
-        for (int i = first; i < n; i++) {
-            // 动态维护数组
-            Collections.swap(output, first, i);
-            // 继续递归填下一个数
-            backtrackOffice(n, output, res, first + 1);
-            // 撤销操作
-            Collections.swap(output, first, i);
+    //==============================================================================
+
+    List<List<Integer>> res = new LinkedList<>();
+
+    public List<List<Integer>> permuteOffice(int[] nums) {
+        // 记录「路径」
+        LinkedList<Integer> track = new LinkedList<>();
+        backtrack(nums, track);
+        return res;
+    }
+
+    /**
+     * 路径：记录在 track 中
+     * 选择列表：nums 中不存在于 track 的那些元素
+     * 结束条件：nums 中的元素全都在 track 中出现
+     *
+     * @param nums
+     * @param track
+     */
+    void backtrack(int[] nums, LinkedList<Integer> track) {
+        // 触发结束条件
+        if (track.size() == nums.length) {
+            res.add(new LinkedList(track));
+            return;
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+            // 排除不合法的选择
+            if (track.contains(nums[i]))
+                continue;
+            // 做选择
+            track.add(nums[i]);
+            // 进入下一层决策树
+            backtrack(nums, track);
+            // 取消选择
+            track.removeLast();
         }
     }
+
 
 }
