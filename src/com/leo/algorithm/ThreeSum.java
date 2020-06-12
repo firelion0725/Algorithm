@@ -2,6 +2,9 @@ package com.leo.algorithm;
 
 import java.util.*;
 
+/**
+ * https://leetcode-cn.com/problems/3sum/
+ */
 public class ThreeSum {
 
     public static void main(String[] args) {
@@ -11,6 +14,7 @@ public class ThreeSum {
     }
 
     //二重循环+hash 速度很不理想
+    //最新的测试 已经开始超时了 不应作为解进行尝试了
 
     public List<List<Integer>> threeSum(int[] nums) {
         if (nums == null || nums.length <= 2) {
