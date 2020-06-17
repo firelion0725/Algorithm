@@ -4,6 +4,9 @@ import javafx.util.Pair;
 
 import java.util.*;
 
+/**
+ * https://leetcode-cn.com/problems/jump-game/
+ */
 public class CanJump {
 
     public static void main(String[] args) {
@@ -116,5 +119,23 @@ public class CanJump {
         result.sort(Comparator.naturalOrder());
 
         return result.get(0);
+    }
+
+    private boolean jumpOffice(int[] nums) {
+        if (nums.length == 1) {
+            return true;
+        }
+        int count = 0;
+        int next = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i <= next) {
+                int data = nums[i];
+                next = Math.max(next, data + i);
+                if (next >= nums.length - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
