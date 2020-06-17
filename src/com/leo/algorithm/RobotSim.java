@@ -16,123 +16,104 @@ public class RobotSim {
         System.out.println(aaa);
     }
 
-    private int robotSim(int[] commands, int[][] obstacles) {
-        //方向 1:N 2:E 3:S 4:W
-        int d = 1;
-        int[] s = {0, 0};
+    //0:N 1:E 2:S 3:W
+    int di = 0;
+    int[] result = new int[2];
+    int max = 0;
 
-        Set<Long> obstacleSet = new HashSet<>();
-        for (int[] obstacle : obstacles) {
-            long ox = (long) obstacle[0] + 30000L;
-            long oy = (long) obstacle[1] + 30000L;
-            obstacleSet.add((ox << 16) + oy);
-        }
+    public int robotSim(int[] commands, int[][] obstacles) {
+        di = 0;
+        result[0] = 0;
+        result[1] = 0;
+        max = 0;
 
         for (int command : commands) {
-            switch (command) {
-                case -2:
-                    d--;
-                    if (d <= 0) {
-                        d = d + 4;
-                    }
-                    break;
-                case -1:
-                    d++;
-                    if (d > 4) {
-                        d = d - 4;
-                    }
-                    break;
-                default:
-//                    handleMove(d, s, command, obstacles);
-                    handleMove2(d, s, command, obstacleSet);
-                    break;
-            }
+            handleCommand(command, obstacles);
         }
-        return s[0] * s[0] + s[1] * s[1];
+        int x = result[0];
+        int y = result[1];
+        return max;
     }
 
-    private void handleMove2(int d, int[] s, int command, Set<Long> obstacleSet) {
-        long hashCode = 0;
+    private void handleCommand(int command, int[][] obstacles) {
+        switch (command) {
+            case -2:
+                di--;
+                if (di < 0) {
+                    di = 3;
+                }
+                break;
+            case -1:
+                di++;
+                if (di > 3) {
+                    di = 0;
+                }
+                break;
+            default:
+                if (command >= 1 && command <= 9) {
+                    move(command, obstacles);
+                }
+                break;
+        }
+    }
 
-        switch (d) {
-            case 1:
+    private int getSquare() {
+        return result[0] * result[0] + result[1] * result[1];
+    }
 
-                for (int i = 0; i < command; i++) {
-                    hashCode = (((long) (s[0]) + 30000L) << 16) + ((long) (s[1] +1) + 30000L);
-                    if (!obstacleSet.contains(hashCode)) {
-                        s[1]++;
+    private void move(int step, int[][] obstacles) {
+        int[] next = new int[2];
+        switch (di) {
+            case 0:
+                for (int i = 0; i < step; i++) {
+                    next[0] = result[0];
+                    next[1] = result[1] + 1;
+                    if (isObs(next, obstacles)) {
+                        continue;
                     }
+                    result[1] = next[1];
+                    max = Math.max(max, getSquare());
+                }
+                break;
+            case 1:
+                for (int i = 0; i < step; i++) {
+                    next[0] = result[0] + 1;
+                    next[1] = result[1];
+                    if (isObs(next, obstacles)) {
+                        continue;
+                    }
+                    result[0] = next[0];
+                    max = Math.max(max, getSquare());
                 }
                 break;
             case 2:
-                for (int i = 0; i < command; i++) {
-                    hashCode = (((long) (s[0]+1) + 30000L) << 16) + ((long) (s[1]) + 30000L);
-                    if (!obstacleSet.contains(hashCode)) {
-                        s[0]++;
+                for (int i = 0; i < step; i++) {
+                    next[0] = result[0];
+                    next[1] = result[1] - 1;
+                    if (isObs(next, obstacles)) {
+                        continue;
                     }
+                    result[1] = next[1];
+                    max = Math.max(max, getSquare());
                 }
                 break;
             case 3:
-                for (int i = 0; i < command; i++) {
-                    hashCode = (((long) (s[0]) + 30000L) << 16) + ((long) (s[1] -1) + 30000L);
-                    if (!obstacleSet.contains(hashCode)) {
-                        s[1]--;
+                for (int i = 0; i < step; i++) {
+                    next[0] = result[0] - 1;
+                    next[1] = result[1];
+                    if (isObs(next, obstacles)) {
+                        continue;
                     }
-                }
-                break;
-            case 4:
-                for (int i = 0; i < command; i++) {
-                    hashCode = (((long) (s[0]-1) + 30000L) << 16) + ((long) (s[1]) + 30000L);
-                    if (!obstacleSet.contains(hashCode)) {
-                        s[0]--;
-                    }
-                }
-                break;
-        }
-
-    }
-
-    private void handleMove(int d, int[] s, int command, int[][] obstacles) {
-
-        switch (d) {
-            case 1:
-                for (int i = 0; i < command; i++) {
-                    s[1]++;
-                    if (isObs(s, obstacles)) {
-                        s[1]--;
-                    }
-                }
-                break;
-            case 2:
-                for (int i = 0; i < command; i++) {
-                    s[0]++;
-                    if (isObs(s, obstacles)) {
-                        s[0]--;
-                    }
-                }
-                break;
-            case 3:
-                for (int i = 0; i < command; i++) {
-                    s[1]--;
-                    if (isObs(s, obstacles)) {
-                        s[1]++;
-                    }
-                }
-                break;
-            case 4:
-                for (int i = 0; i < command; i++) {
-                    s[0]--;
-                    if (isObs(s, obstacles)) {
-                        s[0]++;
-                    }
+                    result[0] = next[0];
+                    max = Math.max(max, getSquare());
                 }
                 break;
         }
     }
 
-    private boolean isObs(int[] s, int[][] obstacles) {
+    private boolean isObs(int[] point, int[][] obstacles) {
         for (int[] ob : obstacles) {
-            if (ob[0] == s[0] && ob[1] == s[1]) {
+            if (point[0] == ob[0] && point[1] == ob[1]) {
                 return true;
             }
         }
