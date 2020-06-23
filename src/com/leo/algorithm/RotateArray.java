@@ -54,4 +54,30 @@ public class RotateArray {
         }
         showResult(nums);
     }
+
+    //==========================================================翻转数组法
+
+
+    private void rotate2(int[] nums, int k) {
+        k = k % nums.length;
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k);
+        reverse(nums, k + 1, nums.length - 1);
+    }
+
+    private void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            swap(nums, start, end);
+            start++;
+            end--;
+        }
+    }
+
+    private void swap(int[] nums, int n1, int n2) {
+        int temp = nums[n1];
+        nums[n1] = nums[n2];
+        nums[n2] = temp;
+    }
+
+
 }

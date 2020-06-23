@@ -56,10 +56,9 @@ public class ValidPalindrome {
 
     /**
      * https://leetcode-cn.com/problems/valid-palindrome-ii/
-     *
+     * <p>
      * 这个是自己做的暴力法求解 过了
      * {@link LongestPalindromicSubstring#longestPalindrome(String)}
-     *
      *
      * @param s
      * @return
@@ -81,28 +80,20 @@ public class ValidPalindrome {
                 start++;
                 end--;
             } else {
+                if (isDelete) {
+                    return false;
+                } else {
+                    isDelete = true;
+                }
+
                 boolean isDeleteStart = chars[start + 1] == c2;
                 boolean isDeleteEnd = c1 == chars[end - 1];
 
                 if (isDeleteStart && !isDeleteEnd) {
                     start++;
-                    if (isDelete) {
-                        return false;
-                    } else {
-                        isDelete = true;
-                    }
-
                 } else if (!isDeleteStart && isDeleteEnd) {
                     end--;
-                    if (isDelete) {
-                        return false;
-                    } else {
-                        isDelete = true;
-                    }
                 } else if (isDeleteStart && isDeleteEnd) {
-                    if (isDelete) {
-                        return false;
-                    }
                     boolean flag1 = true;
                     boolean flag2 = true;
                     for (int i = start, j = end - 1; i < j; i++, j--) {
@@ -129,7 +120,50 @@ public class ValidPalindrome {
                 }
             }
         }
-
         return true;
     }
+
+    //=================================用递归代替循环的写法 极简且更有灵活性 能控制机会次数
+
+    /**
+     * https://leetcode-cn.com/problems/valid-palindrome-ii/solution/javashuang-zhi-zhen-di-gui-jie-jue-680-yan-zheng-h/
+     */
+    public boolean validPalindrome2(String s) {
+        return helper(s.toCharArray(), 0, s.length() - 1, 1);
+    }
+
+    private boolean helper(char[] chars, int start, int end, int chance) {
+        if (start >= end) {
+            return true;
+        }
+
+        if (chars[start] == chars[end]) {
+            return helper(chars, start + 1, end - 1, chance);
+        } else {
+            if (chance == 0) {
+                return false;
+            }
+            return helper(chars, start + 1, end, chance - 1) || helper(chars, start, end - 1, chance - 1);
+        }
+    }
+
+    public boolean validPalindrome3(String s) {
+        return valid(s, 0, s.length() - 1, 1);
+    }
+
+    public boolean valid(String s, int i, int j, int chance) {//这个boolean变量控制递归只有两层
+        while (i < j) {
+            char a = s.charAt(i), b = s.charAt(j);
+            if (a != b) {
+                if (chance == 0) {
+                    return false;
+                }
+                return valid(s, i, j - 1, chance - 1) || valid(s, i + 1, j, chance - 1);
+            }
+            i++;
+            j--;
+        }
+        return true;
+    }
+
 }
