@@ -1,5 +1,8 @@
 package com.leo.algorithm;
 
+/**
+ * https://leetcode-cn.com/problems/decode-ways/
+ */
 public class NumDecodings {
 
     public static void main(String[] args) {
