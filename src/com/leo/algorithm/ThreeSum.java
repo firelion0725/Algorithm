@@ -78,4 +78,44 @@ public class ThreeSum {
         }
         return result;
     }
+
+    private List<List<Integer>> threeSum(int[] nums, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Set<List<Integer>> tres = new HashSet<>();
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
+        Arrays.sort(nums);
+
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i >= 1 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int left = i + 1;
+            int right = nums.length - 1;
+            if (nums[i] + nums[right] + nums[right - 1] < target) {
+                continue;
+            }
+            if (nums[i] + nums[left] + nums[left + 1] > target) {
+                continue;
+            }
+
+            while (left < right) {
+                int temp = nums[i] + nums[left] + nums[right] - target;
+                if (temp == 0) {
+                    Integer[] tarray = {nums[i], nums[left], nums[right]};
+                    List<Integer> list = Arrays.asList(tarray);
+                    tres.add(list);
+                    right--;
+                    left++;
+                } else if (temp > 0) {
+                    right--;
+                } else {
+                    left++;
+                }
+            }
+        }
+        res.addAll(tres);
+        return res;
+    }
 }
