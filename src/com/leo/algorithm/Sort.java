@@ -18,7 +18,7 @@ public class Sort {
 
 //        int[] result = selectionSort(nums2);
 //        int[] result = QuickSort2(nums2, 0, nums2.length - 1);
-        int[] result = QuickSort3(nums2, 0, nums2.length - 1);
+        int[] result = quickSort4(nums2, 0, nums2.length - 1);
         Utils.showResult(result);
     }
 
@@ -107,6 +107,32 @@ public class Sort {
         return result;
     }
 
+    public static void mergeSort(int[] array, int left, int right) {
+        if (right <= left) return;
+        int mid = (left + right) >> 1; // (left + right) / 2
+
+        mergeSort(array, left, mid);
+        mergeSort(array, mid + 1, right);
+        merge(array, left, mid, right);
+    }
+
+    public static void merge(int[] arr, int left, int mid, int right) {
+        int[] temp = new int[right - left + 1]; // 中间数组
+        int i = left, j = mid + 1, k = 0;
+
+        while (i <= mid && j <= right) {
+            temp[k++] = arr[i] <= arr[j] ? arr[i++] : arr[j++];
+        }
+
+        while (i <= mid)   temp[k++] = arr[i++];
+        while (j <= right) temp[k++] = arr[j++];
+
+        for (int p = 0; p < temp.length; p++) {
+            arr[left + p] = temp[p];
+        }
+        // 也可以用 System.arraycopy(a, start1, b, start2, length)
+    }
+
     /**
      * 选择排序
      * 首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置
@@ -179,16 +205,16 @@ public class Sort {
 //        int pivot = (int) (start + end) / 2;
         int pivot = (int) start;
         //初始指针
-        int smallIndex = start - 1;
+        int smallIndex = start;
         //将基准点放末尾
         swap(array, pivot, end);
 
         for (int i = start; i <= end; i++) {
             if (array[i] <= array[end]) {
-                smallIndex++;
                 if (i > smallIndex) {
                     swap(array, i, smallIndex);
                 }
+                smallIndex++;
             }
         }
         return smallIndex;
@@ -238,5 +264,28 @@ public class Sort {
         }
         array[start] = temp;
         return start;
+    }
+
+
+    public static int[] quickSort4(int[] array, int begin, int end) {
+        if (end <= begin) return array;
+        int pivot = partition2(array, begin, end);
+        quickSort4(array, begin, pivot - 1);
+        quickSort4(array, pivot + 1, end);
+        return array;
+    }
+
+    static int partition2(int[] a, int begin, int end) {
+        // pivot: 标杆位置，counter: 小于pivot的元素的个数
+        int pivot = end;
+        int counter = begin;
+        for (int i = begin; i < end; i++) {
+            if (a[i] < a[pivot]) {
+                swap(a, counter, i);
+                counter++;
+            }
+        }
+        swap(a, pivot, counter);
+        return counter;
     }
 }
