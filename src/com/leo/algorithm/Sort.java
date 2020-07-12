@@ -17,8 +17,11 @@ public class Sort {
         int[] nums2 = {7, 6, 3, 88, 5, 100, 2, 1};
 
 //        int[] result = selectionSort(nums2);
-//        int[] result = QuickSort2(nums2, 0, nums2.length - 1);
+//        int[] result = QuickSort3(nums2, 0, nums2.length - 1);
         int[] result = quickSort4(nums2, 0, nums2.length - 1);
+//        int[] result = nums2;
+//        heapSort(result);
+//        Utils.showResult(nums2);
         Utils.showResult(result);
     }
 
@@ -117,20 +120,19 @@ public class Sort {
     }
 
     public static void merge(int[] arr, int left, int mid, int right) {
-        int[] temp = new int[right - left + 1]; // 中间数组
+        int[] temp = new int[right - left + 1];
         int i = left, j = mid + 1, k = 0;
 
         while (i <= mid && j <= right) {
             temp[k++] = arr[i] <= arr[j] ? arr[i++] : arr[j++];
         }
 
-        while (i <= mid)   temp[k++] = arr[i++];
+        while (i <= mid) temp[k++] = arr[i++];
         while (j <= right) temp[k++] = arr[j++];
 
         for (int p = 0; p < temp.length; p++) {
             arr[left + p] = temp[p];
         }
-        // 也可以用 System.arraycopy(a, start1, b, start2, length)
     }
 
     /**
@@ -269,7 +271,7 @@ public class Sort {
 
     public static int[] quickSort4(int[] array, int begin, int end) {
         if (end <= begin) return array;
-        int pivot = partition2(array, begin, end);
+        int pivot = partition3(array, begin, end);
         quickSort4(array, begin, pivot - 1);
         quickSort4(array, pivot + 1, end);
         return array;
@@ -288,4 +290,51 @@ public class Sort {
         swap(a, pivot, counter);
         return counter;
     }
+
+    static int partition3(int[] a, int begin, int end) {
+        int i = begin;
+        int j = end + 1;
+        int v = a[begin];
+        while (true) {
+            while (a[++i] < v) if (i == end) break;
+            while (v < a[--j]) if (j == begin) break;
+            if (i >= j) break;
+            swap(a, i, j);
+        }
+        swap(a, begin, j);
+        return j;
+    }
+
+    //堆排序===========================================
+
+    static void heapify(int[] array, int length, int i) {
+        int left = 2 * i + 1, right = 2 * i + 2;
+        int largest = i;
+        if (left < length && array[left] > array[largest]) {
+            largest = left;
+        }
+        if (right < length && array[right] > array[largest]) {
+            largest = right;
+        }
+        if (largest != i) {
+            int temp = array[i];
+            array[i] = array[largest];
+            array[largest] = temp;
+            heapify(array, length, largest);
+        }
+    }
+
+    public static void heapSort(int[] array) {
+        if (array.length == 0) return;
+        int length = array.length;
+        for (int i = length / 2 - 1; i >= 0; i--) {
+            heapify(array, length, i);
+        }
+        for (int i = length - 1; i >= 0; i--) {
+            swap(array, 0, i);
+            heapify(array, i, 0);
+        }
+    }
+
+
 }
