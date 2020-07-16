@@ -138,26 +138,46 @@ public class MaxProfitAll {
      * https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/
      */
     public int maxProfit4(int max_k, int[] prices) {
+        if (max_k == 0) return 0;
         int n = prices.length;
-
-
+        if (max_k > prices.length / 2) return profit(prices);
         int[][][] dp = new int[n][max_k + 1][2];
-        for (int i = 0; i < n; i++)
-            for (int k = max_k; k >= 1; k--) {
-                if (i - 1 == -1) {
-                    /* 处理 base case */
+        for (int i = 0; i < n; i++) {
+            // base case
+            dp[i][0][0] = 0;//至今为止没有交易，收益为0
+            dp[i][0][1] = Integer.MIN_VALUE;//交易了0次，但持有股票，不符合规则
+            for (int k = 1; k <= max_k; k++) {
+                // base case
+                if (i == 0) {
+                    dp[i][k][0] = 0;//第一天买入k次，当天卖出k次,收入为0
+                    dp[i][k][1] = -prices[i];//甭管第一天买多少次，反正最后少卖一次，持有了股票
+                    continue;
                 }
                 dp[i][k][0] = Math.max(dp[i - 1][k][0], dp[i - 1][k][1] + prices[i]);
                 dp[i][k][1] = Math.max(dp[i - 1][k][1], dp[i - 1][k - 1][0] - prices[i]);
             }
+        }
         return dp[n - 1][max_k][0];
+    }
+
+    private int profit(int[] prices) {
+        int dp_i_0 = 0;
+        int dp_i_1 = Integer.MIN_VALUE;
+        int tmp = 0;
+        for (int i = 0; i < prices.length; i++) {
+            tmp = dp_i_0;
+            dp_i_0 = Math.max(dp_i_0, dp_i_1 + prices[i]);
+            dp_i_1 = Math.max(dp_i_1, tmp - prices[i]);
+            tmp = dp_i_0;
+        }
+        return dp_i_0;
     }
 
     /**
      * https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
      */
     public int maxProfit5(int max_k, int[] prices) {
-        if(prices.length == 0){
+        if (prices.length == 0) {
             return 0;
         }
         int n = prices.length;
@@ -166,7 +186,7 @@ public class MaxProfitAll {
         dp[0][1] = -prices[0];
         for (int i = 1; i < n; i++) {
             dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-            dp[i][1] = Math.max(dp[i - 1][1],  i > 1 ? dp[i-2][0]-prices[i] : -prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], i > 1 ? dp[i - 2][0] - prices[i] : -prices[i]);
         }
 
         return dp[n - 1][0];
