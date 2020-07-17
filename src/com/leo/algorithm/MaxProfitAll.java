@@ -97,6 +97,9 @@ public class MaxProfitAll {
      * https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
      */
     public int maxProfit2(int[] prices) {
+        if(prices.length == 0){
+            return 0;
+        }
         int n = prices.length;
         int[][] dp = new int[n][2];
         dp[0][0] = 0;
@@ -140,7 +143,7 @@ public class MaxProfitAll {
     public int maxProfit4(int max_k, int[] prices) {
         if (max_k == 0) return 0;
         int n = prices.length;
-        if (max_k > prices.length / 2) return profit(prices);
+        if (max_k > n / 2) return profit(prices);
         int[][][] dp = new int[n][max_k + 1][2];
         for (int i = 0; i < n; i++) {
             // base case
