@@ -44,11 +44,35 @@ public class TwoSum {
         for (int i = 0; i < nums.length; i++) {
             int complement = target - nums[i];
             if (map.containsKey(complement)) {
-                return new int[] { map.get(complement), i };
+                return new int[]{map.get(complement), i};
             }
             map.put(nums[i], i);
         }
         throw new IllegalArgumentException("No two sum solution");
+    }
+
+    //===============================================================
+
+    /**
+     * 167. 两数之和 II - 输入有序数组
+     * https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/
+     */
+    public int[] twoSum2(int[] numbers, int target) {
+        int left = 0;
+        int right = numbers.length - 1;
+        int[] res = new int[2];
+        while (left < right) {
+            if (numbers[left] + numbers[right] == target) {
+                res[0] = left+1;
+                res[1] = right+1;
+                return res;
+            } else if (numbers[left] + numbers[right] > target) {
+                right--;
+            } else {
+                left++;
+            }
+        }
+        return res;
     }
 
 
