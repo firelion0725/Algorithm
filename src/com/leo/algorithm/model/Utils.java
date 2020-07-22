@@ -50,4 +50,16 @@ public class Utils {
         return list.get(0);
     }
 
+    public static List<List<Integer>> arrayToList(int[][] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        for (int[] num : nums) {
+            List<Integer> list = new ArrayList<>();
+            for (int i : num) {
+                list.add(i);
+            }
+            res.add(list);
+        }
+        return res;
+    }
+
 }
