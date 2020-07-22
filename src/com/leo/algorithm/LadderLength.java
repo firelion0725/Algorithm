@@ -1,5 +1,7 @@
 package com.leo.algorithm;
 
+import javafx.util.Pair;
+
 import java.util.*;
 
 /**
@@ -50,7 +52,7 @@ public class LadderLength {
             // 打开以方便调试
             System.out.println("beginVisited => " + beginVisited);
             System.out.println("  endVisited => " + endVisited + "\n");
-
+            //双向BFS,如果end一侧更小则交互，通过更小的集合进行搜索，即使没有这个交换依然可以过 只是速度会变慢
             // 优先选择小的哈希表进行扩散，考虑到的情况更少
             if (beginVisited.size() > endVisited.size()) {
                 Set<String> temp = beginVisited;
@@ -75,6 +77,7 @@ public class LadderLength {
                             if (endVisited.contains(nextWord)) {
                                 return step + 1;
                             }
+                            //不能走回头路，通过visited 生成nextSet
                             if (!visited.contains(nextWord)) {
                                 nextLevelVisited.add(nextWord);
                                 visited.add(nextWord);
@@ -153,4 +156,98 @@ public class LadderLength {
         }
         return 0;
     }
+
+
+    //===================================================================
+    private int L = 0;
+    private Map<String, List<String>> allComboDict = new HashMap<>();
+
+
+    private int visitWordNode(
+            Queue<Pair<String, Integer>> Q,
+            Map<String, Integer> visited,
+            Map<String, Integer> othersVisited) {
+
+        Pair<String, Integer> node = Q.remove();
+        String word = node.getKey();
+        int level = node.getValue();
+
+        for (int i = 0; i < this.L; i++) {
+
+            // Intermediate words for current word
+            String newWord = word.substring(0, i) + '*' + word.substring(i + 1, L);
+
+            // Next states are all the words which share the same intermediate state.
+            for (String adjacentWord : this.allComboDict.getOrDefault(newWord, new ArrayList<>())) {
+                // If at any point if we find what we are looking for
+                // i.e. the end word - we can return with the answer.
+                if (othersVisited.containsKey(adjacentWord)) {
+                    return level + othersVisited.get(adjacentWord);
+                }
+
+                if (!visited.containsKey(adjacentWord)) {
+
+                    // Save the level as the value of the dictionary, to save number of hops.
+                    visited.put(adjacentWord, level + 1);
+                    Q.add(new Pair(adjacentWord, level + 1));
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int ladderLength3(String beginWord, String endWord, List<String> wordList) {
+
+        if (!wordList.contains(endWord)) {
+            return 0;
+        }
+
+        // Since all words are of same length.
+        this.L = beginWord.length();
+
+        wordList.forEach(
+                word -> {
+                    for (int i = 0; i < L; i++) {
+                        // Key is the generic word
+                        // Value is a list of words which have the same intermediate generic word.
+                        String newWord = word.substring(0, i) + '*' + word.substring(i + 1, L);
+                        List<String> transformations =
+                                this.allComboDict.getOrDefault(newWord, new ArrayList<>());
+                        transformations.add(word);
+                        this.allComboDict.put(newWord, transformations);
+                    }
+                });
+
+        // Queues for birdirectional BFS
+        // BFS starting from beginWord
+        Queue<Pair<String, Integer>> Q_begin = new LinkedList<>();
+        // BFS starting from endWord
+        Queue<Pair<String, Integer>> Q_end = new LinkedList<>();
+        Q_begin.add(new Pair(beginWord, 1));
+        Q_end.add(new Pair(endWord, 1));
+
+        // Visited to make sure we don't repeat processing same word.
+        Map<String, Integer> visitedBegin = new HashMap<>();
+        Map<String, Integer> visitedEnd = new HashMap<>();
+        visitedBegin.put(beginWord, 1);
+        visitedEnd.put(endWord, 1);
+
+        while (!Q_begin.isEmpty() && !Q_end.isEmpty()) {
+
+            // One hop from begin word
+            int ans = visitWordNode(Q_begin, visitedBegin, visitedEnd);
+            if (ans > -1) {
+                return ans;
+            }
+
+            // One hop from end word
+            ans = visitWordNode(Q_end, visitedEnd, visitedBegin);
+            if (ans > -1) {
+                return ans;
+            }
+        }
+
+        return 0;
+    }
+
 }
