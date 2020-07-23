@@ -8,7 +8,11 @@ public class Utils {
     public static TreeNode intToTree(Integer[] nums) {
         List<TreeNode> list = new ArrayList<>();
         for (Integer num : nums) {
-            TreeNode node = new TreeNode(num);
+            TreeNode node = null;
+            if (num != null) {
+                node = new TreeNode(num);
+            }
+
             list.add(node);
         }
         for (int i = 0; i < list.size(); i++) {
