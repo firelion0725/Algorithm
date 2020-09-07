@@ -5,7 +5,7 @@ import java.util.*;
 public class TopKFrequent {
 
     public static void main(String[] args) {
-        int[] nums = {5,2,5,3,5,3,1,1,3};
+        int[] nums = {5, 2, 5, 3, 5, 3, 1, 1, 3};
         int[] result = topKFrequentOffice(nums, 2);
         System.out.println(result);
     }
@@ -51,6 +51,34 @@ public class TopKFrequent {
             result[i] = pq.remove();
         }
         return result;
+    }
+
+    public int[] topKFrequent3(int[] nums, int k) {
+        //数据整体存入hashmap
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int v : nums) {
+            map.put(v, map.getOrDefault(v, 0) + 1);
+        }
+        //权重队列一次加入hashmap中的值
+        PriorityQueue<Integer> queue = new PriorityQueue<>(Comparator.comparingInt(map::get));
+
+        for (int key : map.keySet()) {
+            if (queue.size() < k) {
+                queue.add(key);
+            } else if (map.get(key) > map.get(queue.peek())) {
+                queue.poll();
+                queue.add(key);
+            }
+        }
+
+        //装载最终答案
+        int[] res = new int[k];
+
+        for (int i = 0; i < k; i++) {
+            res[i] = queue.poll();
+        }
+
+        return res;
     }
 
 }
