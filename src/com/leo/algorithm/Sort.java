@@ -307,8 +307,23 @@ public class Sort {
 
     //堆排序===========================================
 
+    public static void heapSort(int[] array) {
+        if (array.length == 0) return;
+        int length = array.length;
+        //从第一个非叶子节点开始调整，最后得到一个大顶堆
+        for (int i = length / 2 - 1; i >= 0; i--) {
+            heapify(array, length, i);
+        }
+
+        for (int i = length - 1; i >= 0; i--) {
+            swap(array, 0, i);
+            heapify(array, i, 0);
+        }
+    }
+
     static void heapify(int[] array, int length, int i) {
-        int left = 2 * i + 1, right = 2 * i + 2;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
         int largest = i;
         if (left < length && array[left] > array[largest]) {
             largest = left;
@@ -317,24 +332,8 @@ public class Sort {
             largest = right;
         }
         if (largest != i) {
-            int temp = array[i];
-            array[i] = array[largest];
-            array[largest] = temp;
+            swap(array, i, largest);
             heapify(array, length, largest);
         }
     }
-
-    public static void heapSort(int[] array) {
-        if (array.length == 0) return;
-        int length = array.length;
-        for (int i = length / 2 - 1; i >= 0; i--) {
-            heapify(array, length, i);
-        }
-        for (int i = length - 1; i >= 0; i--) {
-            swap(array, 0, i);
-            heapify(array, i, 0);
-        }
-    }
-
-
 }
