@@ -10,10 +10,10 @@ public class ThreeSortWay {
         ThreeSortWay s = new ThreeSortWay();
 //        s.quickSort(nums);
 //        s.show(nums);
-//        int[] result = s.mergeSort(nums);
+        int[] result = s.mergeSort(nums);
 //        s.show(result);
-        s.heapSort(nums);
-        s.show(nums);
+//        s.heapSort(nums);
+        s.show(result);
     }
 
 //=================================================
@@ -78,7 +78,7 @@ public class ThreeSortWay {
         int[] left = Arrays.copyOfRange(array, 0, mid);
         int[] right = Arrays.copyOfRange(array, mid, array.length);
 
-        return merge(mergeSort(left), mergeSort(right));
+        return merge2(mergeSort(left), mergeSort(right));
     }
 
     private int[] merge(int[] left, int[] right) {
@@ -96,6 +96,63 @@ public class ThreeSortWay {
             }
         }
         return result;
+    }
+
+    private int[] merge2(int[] left, int[] right) {
+        int[] result = new int[left.length + right.length];
+
+        int index = 0, index1 = 0, index2 = 0;
+
+        while (index1 < left.length && index2 < right.length) {
+            result[index++] = left[index1] < right[index2] ? left[index1++] : right[index2++];
+        }
+        while (index1 < left.length) {
+            result[index++] = left[index1++];
+        }
+        while (index2 < right.length) {
+            result[index++] = right[index2++];
+        }
+
+        return result;
+    }
+
+    //===========================================
+
+    private int[] mergeSort2(int[] arr) {
+        mergeSort(arr, 0, arr.length - 1);
+        return arr;
+    }
+
+    private void mergeSort(int[] arr, int start, int end) {
+        if (end <= start) {
+            return;
+        }
+        int mid = (start + end) / 2;
+        mergeSort(arr, start, mid);
+        mergeSort(arr, mid + 1, end);
+        merge(arr, start, mid, end);
+    }
+
+    private void merge(int[] arr, int left, int mid, int right) {
+        int[] res = new int[right - left + 1];
+
+        int index = 0;
+        int index1 = left;
+        int index2 = mid + 1;
+
+        while (index1 <= mid && index2 <= right) {
+            res[index++] = arr[index1] < arr[index2] ? arr[index1++] : arr[index2++];
+        }
+        while (index1 <= mid) {
+            res[index++] = arr[index1++];
+        }
+        while (index2 <= right) {
+            res[index++] = arr[index2++];
+        }
+
+        for (int i = 0; i < res.length; i++) {
+            arr[left + i] = res[i];
+        }
     }
 
 //=========================================================
@@ -125,15 +182,15 @@ public class ThreeSortWay {
             largest = l;
         }
 
-        if(r<n && array[r] > array[largest]){
+        if (r < n && array[r] > array[largest]) {
             largest = r;
         }
 
-        if(largest != i){
+        if (largest != i) {
             int temp = array[i];
             array[i] = array[largest];
             array[largest] = temp;
-            heapify(array,n,largest);
+            heapify(array, n, largest);
         }
 
     }
@@ -142,8 +199,8 @@ public class ThreeSortWay {
 
 
     private void show(int[] nums) {
-        for (int i = 0; i < nums.length; i++) {
-            System.out.println(nums[i]);
+        for (int num : nums) {
+            System.out.println(num);
         }
     }
 }
